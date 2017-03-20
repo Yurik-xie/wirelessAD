@@ -2,7 +2,7 @@
 使用的工具是 httrack 网站复制机
 ### 安装 ### 
 
-    apt-get install webhttrack
+    apt-get install webhttrack
 
 ### 使用 ###
 
