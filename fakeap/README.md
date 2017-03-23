@@ -40,6 +40,7 @@ deny_mac_file：指定禁止MAC列表文件所在；
     auth_algs=1
  
 其中auth_algs指定采用哪种认证算法，采用位域（bit fields）方式来制定，其中第一位表示开放系统认证（Open System Authentication, OSA），第二位表示共享密钥认证（Shared Key Authentication, SKA）。 
+
 我这里设置alth_algs的值为1，表示只采用OSA；如果为3则两种认证方式都支持。如果采用认证，则设置auth_algs为1；否则把这行代码注释掉（在前面加#）。 
  
 由于RADIUS认证需要提供外部RADIUS服务器，我们没有这个功能，因此我只研究了WEP、WPA和WPA2这三种加密方式。 
@@ -61,22 +62,25 @@ deny_mac_file：指定禁止MAC列表文件所在；
     #wpa_pairwise=TKIP CCMP
     rsn_pairwise=TKIP CCMP
 
-wpa：指定WPA类型，这是一个位域值（bit fields），第一位表示启用WPA，第二位表示启用WPA2。在我的配置中，无论设置成1、2或3，都可以正常连接； 
+wpa：指定WPA类型，这是一个位域值（bit fields），第一位表示启用WPA，第二位表示启用WPA2。在我的配置中，无论设置成1、2或3，都可以正常连接；
+
 wpa_passphrase：WPA/WPA2加密需要指定密钥，这个选项就是配置WPA/WPA2的密钥。注意wpa_passphrase要求8~63个字符。另外还可以通过配置wpa_psk来制定密钥，不过要设置一个256位的16进制密钥，不适合我们的需求； 
-wpa_pairwise/rsn_pairwise：如果启用了WPA，需要指定wpa_pairwise；如果启用了WPA2，需要指定rsn_pairwise，或者采用wpa_pairwise的设定。都可以设定成TKIP、CCMP或者两者都有，具体含义我也没仔细弄清楚。一篇比较老的文章说TKIP不兼容Windows Mobile，但我的Windows Mobile 6.5在这两种算法下都没有遇到任何问题。 
+
+wpa_pairwise/rsn_pairwise：如果启用了WPA，需要指定wpa_pairwise；如果启用了WPA2，需要指定rsn_pairwise，或者采用wpa_pairwise的设定。 
 
 经过这样一些配置，启动hostapd之后应该就可以按照自己的需求正常使用无线接入点功能了： 
 
     /usr/bin/hostapd  /etc/hostapd.conf 
     
 REF： 
+
 http://www.cnblogs.com/zhuwenger/archive/2011/03/11/1980294.html  
 
 http://forum.ubuntu.org.cn/viewtopic.php?t=421829  
  
 ## dhcp服务 ##
 
-客户端连接上SoftAP后，要给他们分配IP地址。这里有一条最关键，就是SoftAP的IP地址和Internet接口的IP地址不能在网一个段。比如，连接Internet网的网卡eth0，地址是10.10.10.138/24，则at0的地址后面不能设置为同一网段，这里设置为10.0.0.1/24。
+客户端连接上SoftAP后，要给他们分配IP地址。这里有一条最关键，就是AP的IP地址和Internet接口的IP地址不能在网一个段。比如，连接Internet网的网卡eth0，地址是10.10.10.138/24，则wlan的地址后面不能设置为同一网段，这里设置为192.168.0.1/24。
 
 ### 安装dhcp服务 ###
 
