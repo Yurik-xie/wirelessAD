@@ -72,9 +72,10 @@ wpa_pairwise/rsn_pairwise：如果启用了WPA，需要指定wpa_pairwise；如�
 
     /usr/bin/hostapd  /etc/hostapd.conf 
     
-    REF： 
-    http://www.cnblogs.com/zhuwenger/archive/2011/03/11/1980294.html  
-    http://forum.ubuntu.org.cn/viewtopic.php?t=421829  
+        REF： 
+
+        http://www.cnblogs.com/zhuwenger/archive/2011/03/11/1980294.html  
+        http://forum.ubuntu.org.cn/viewtopic.php?t=421829  
  
 ## dhcp服务 ##
 
@@ -102,3 +103,62 @@ wpa_pairwise/rsn_pairwise：如果启用了WPA，需要指定wpa_pairwise；如�
 注意，转发生效需要本机开启ip_forward功能。指令是：
 
     echo "1" > /proc/sys/net/ipv4/ip_forward
+    
+## 使用DNSmaq ##
+
+### DNS服务器设置 ###
+
+#### DNS 缓存设置 #### 
+
+要在单台电脑上以守护进程方式启动`dnsmasq`做DNS缓存服务器，编辑`/etc/dnsmasq.conf`，添加监听地址： 
+
+    listen-address=127.0.0.1
+    
+如果用此主机为局域网提供默认 DNS，请用为该主机绑定固定 IP 地址，设置： 
+
+    listen-address=192.168.x.x
+    
+这种情况建议配置静态IP 
+
+多个ip地址设置:
+
+    listen-address=127.0.0.1,192.168.x.x 
+    
+#### DNS 地址文件 ####
+
+在配置好dnsmasq后，你需要编辑`/etc/resolv.conf`让DHCP客户端首先将本地地址(localhost)加入 DNS 文件`/etc/resolv.conf`，然后再通过其他DNS服务器解析地址。配置好DHCP客户端后需要重新启动网络来使设置生效。 
+
+一种选择是一个纯粹的`resolv.conf` 配置。要做到这一点，才使第一个域名服务器在`/etc/resolv.conf` 中指向localhost：
+
+    /etc/resolv.conf
+    nameserver 127.0.0.1
+    # External nameservers
+    ...
+    
+现在，DNS查询将首先解析dnsmasq，只检查外部的服务器如果DNSMasq无法解析查询.  不幸的是`dhcpcd`往往默认覆盖`/etc/resolv.conf`, 所以如果你使用DHCP，这是一个好主意来保护 `/etc/resolv.conf`,要做到这一点，追加 `nohook resolv.conf`到dhcpcd的配置文件：
+
+    /etc/dhcpcd.conf
+    ...
+    nohook resolv.conf
+
+
+### DHCP 服务器设置  ###
+
+dnsmasq默认关闭DHCP功能，如果该主机需要为局域网中的其他设备提供IP和路由，应该对dnsmasq配置文件`/etc/dnsmasq.conf`必要的配置如下：
+
+    # Only listen to routers' LAN NIC.  Doing so opens up tcp/udp port 53 to
+    # localhost and udp port 67 to world:
+    interface=<LAN-NIC>
+
+    # dnsmasq will open tcp/udp port 53 and udp port 67 to world to help with
+    # dynamic interfaces (assigning dynamic ips). Dnsmasq will discard world
+    # requests to them, but the paranoid might like to close them and let the 
+    # kernel handle them:
+    bind-interfaces
+
+    # Dynamic range of IPs to make available to LAN pc
+    dhcp-range=192.168.111.50,192.168.111.100,12h
+
+    # If you’d like to have dnsmasq assign static IPs, bind the LAN computer's
+    # NIC MAC address:
+    dhcp-host=aa:bb:cc:dd:ee:ff,192.168.111.50
