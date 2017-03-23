@@ -142,7 +142,7 @@ wpa_pairwise/rsn_pairwise：如果启用了WPA，需要指定wpa_pairwise；如�
     nohook resolv.conf
 
 
-### DHCP 服务器设置  ###
+### DHCP 服务器设置  ### 
 
 dnsmasq默认关闭DHCP功能，如果该主机需要为局域网中的其他设备提供IP和路由，应该对dnsmasq配置文件`/etc/dnsmasq.conf`必要的配置如下：
 
