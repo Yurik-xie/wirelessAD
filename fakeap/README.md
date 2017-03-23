@@ -72,11 +72,9 @@ wpa_pairwise/rsn_pairwise：如果启用了WPA，需要指定wpa_pairwise；如�
 
     /usr/bin/hostapd  /etc/hostapd.conf 
     
-REF： 
-
-http://www.cnblogs.com/zhuwenger/archive/2011/03/11/1980294.html  
-
-http://forum.ubuntu.org.cn/viewtopic.php?t=421829  
+    REF： 
+    http://www.cnblogs.com/zhuwenger/archive/2011/03/11/1980294.html  
+    http://forum.ubuntu.org.cn/viewtopic.php?t=421829  
  
 ## dhcp服务 ##
 
@@ -88,9 +86,7 @@ http://forum.ubuntu.org.cn/viewtopic.php?t=421829
 
 ## 将AP的接口设置为该网段的网关 ##
 
-    ifconfig wlan0 up
     ifconfig wlan0 192.168.0.1 netmask 255.255.255.0
-    ifconfig wlan0 mtu 1500
     route add -net 192.168.0.0 netmask 255.255.255.0 gw 10.0.0.1
 
 ### 启动dhcp服务 ###
