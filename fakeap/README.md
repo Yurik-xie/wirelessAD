@@ -1,4 +1,4 @@
-## 利用 hostapd 建立 ap  ## 
+## 利用 hostapd 建立 AP  ## 
 
 hostapd是一个带加密功能的无线接入点程序，是Linux操作系统上构件无线接入点的一个比较方便的工具，支持IEEE 802.11协议和IEEE 802.1X/WPA/WPA2/EAP/RADIUS加密。 
 
@@ -70,7 +70,7 @@ wpa_pairwise/rsn_pairwise：如果启用了WPA，需要指定wpa_pairwise；如�
 
 经过这样一些配置，启动hostapd之后应该就可以按照自己的需求正常使用无线接入点功能了： 
 
-    /usr/bin/hostapd  /etc/hostapd.conf 
+    /usr/bin/hostapd  hostapd.conf 
     
         REF： 
 
@@ -90,7 +90,7 @@ wpa_pairwise/rsn_pairwise：如果启用了WPA，需要指定wpa_pairwise；如�
     ifconfig wlan0 192.168.0.1 netmask 255.255.255.0
     route add -net 192.168.0.0 netmask 255.255.255.0 gw 10.0.0.1
 
-### 启动dhcp服务 ###
+### 启动DHCP服务 ###
 
     dhcpd -d -f -cf dhcpd.conf <INTERFACE>
     
@@ -140,8 +140,8 @@ wpa_pairwise/rsn_pairwise：如果启用了WPA，需要指定wpa_pairwise；如�
     /etc/dhcpcd.conf
     ...
     nohook resolv.conf
-
-
+ 
+ 
 ### DHCP 服务器设置  ### 
 
 dnsmasq默认关闭DHCP功能，如果该主机需要为局域网中的其他设备提供IP和路由，应该对dnsmasq配置文件`/etc/dnsmasq.conf`必要的配置如下：
